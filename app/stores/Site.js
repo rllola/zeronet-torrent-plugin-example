@@ -11,6 +11,7 @@ class Site extends ZeroFrame {
   constructor () {
     super()
 
+    // Work only for one infohash... Need one map of torrent and each a pieces map...
     this.readPiecesCallbacks = new Map()
     this.events = new EventEmitter()
 
@@ -33,8 +34,7 @@ class Site extends ZeroFrame {
         }
         break
       case PIECE_FINISHED_ALERT:
-        console.log(message)
-        this.events.emit(PIECE_FINISHED_ALERT)
+        this.events.emit(PIECE_FINISHED_ALERT, message.params.pieceIndex)
         break
     }
   }
@@ -103,7 +103,6 @@ class Site extends ZeroFrame {
     } else {
       this.cmd('readPiece', {info_hash: infoHash, piece_index: pieceIndex}, (response) => {
         if (response === 'ok') {
-          console.log('OK')
           self.readPiecesCallbacks.set(pieceIndex, callback)
         } else {
           console.error(response.error)
@@ -117,6 +116,20 @@ class Site extends ZeroFrame {
       throw 'Callback need to be a function !'
     } else {
       this.cmd('havePiece', {info_hash: infoHash, piece_index: pieceIndex}, (response) => {
+        if (response.error) {
+          console.error(response.error)
+        } else {
+          callback(response)
+        }
+      })
+    }
+  }
+
+  prioritizePiece (infoHash, pieceIndex, newPriority, callback) {
+    if (typeof callback !== 'function') {
+      throw 'Callback need to be a function !'
+    } else {
+      this.cmd('prioritizePiece', {info_hash: infoHash, piece_index: pieceIndex, new_priority: newPriority}, (response) => {
         if (response.error) {
           console.error(response.error)
         } else {

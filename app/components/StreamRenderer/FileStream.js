@@ -1,5 +1,7 @@
 import { Readable } from 'stream'
 
+const HIGH_PRIORITY = 7
+
 class FileStream extends Readable {
   constructor (offset, size, pieceLength, infoHash, site, opts) {
     super(opts)
@@ -17,24 +19,32 @@ class FileStream extends Readable {
     this._startPiece = (start + offset) / pieceLength | 0
     this._piece = this._startPiece
     this._offset = (start + offset) - (this._startPiece * pieceLength)
+    this._criticalLength = Math.min((1024 * 1024 / pieceLength) | 0, 2) // Took from webtorrent
 
     this._missing = end - start
 
     this._onReadPiece = this._onReadPiece.bind(this)
+    this._onPieceFinished = this._onPieceFinished.bind(this)
+
+    this.site.events.on('piece_finished_alert', this._onPieceFinished)
    }
 
-   /* _getCriticalPieces (index, criticalLength) {
+   _getCriticalPieces (index, criticalLength) {
      for ( var i = 0; i < criticalLength; i++ ) {
        var nextCriticalPiece = index + i
-       if (!this._torrent.handle.havePiece(nextCriticalPiece)) {
-         this._torrent.handle.piecePriority(nextCriticalPiece, HIGH_PRIORITY)
-       }
+       this.site.havePiece(this._infoHash, nextCriticalPiece, (response) => {
+         if (!response) {
+           this.site.prioritizePiece(this._infoHash, nextCriticalPiece, HIGH_PRIORITY, (response) => {
+             // console.log(response)
+           })
+         }
+       })
      }
-   }*/
+   }
 
    _onPieceFinished (pieceIndex) {
      if (pieceIndex === this._piece) {
-       //this._torrent.handle.readPiece(pieceIndex)
+       this.site.readPiece(this._infoHash, this._piece, this._onReadPiece)
      }
    }
 
@@ -73,7 +83,6 @@ class FileStream extends Readable {
    }
 
   _read (size) {
-    console.log(this._missing)
     if (this._missing === 0) {
       // We have transfered the all file
       this.push(null)
@@ -81,7 +90,10 @@ class FileStream extends Readable {
     }
     this.site.havePiece(this._infoHash, this._piece, (response) => {
       if (!response) {
-        // Wait for piece
+        this.site.prioritizePiece(this._infoHash, this._piece, HIGH_PRIORITY, (response) => {
+          // console.log(response)
+        })
+        this._getCriticalPieces(this._piece + 1, this._criticalLength)
       } else {
         this.site.readPiece(this._infoHash, this._piece, this._onReadPiece)
       }
@@ -94,6 +106,9 @@ class FileStream extends Readable {
     }
     if (this.destroyed) return
     this.destroyed = true
+
+    this.site.events.removeListener('piece_finished_alert', this._onPieceFinished)
+
 
     if (onclose) onclose()
   }
