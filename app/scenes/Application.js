@@ -13,11 +13,9 @@ class Application extends Component {
     return (
       <div className='container-fluid'>
         <h1>Video streaming with Torrent plugin !</h1>
-        {/* this.props.site.hasTorrentPlugin
-          ? <Form />
-          : <NoTorrentPlugin />
-        */}
-        <Streaming />
+        {this.props.site.hasTorrentPlugin
+          ? <Streaming />
+          : <NoTorrentPlugin />}
       </div>
     )
   }
