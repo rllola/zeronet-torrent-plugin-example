@@ -42,11 +42,11 @@ class Application extends Component {
          </Header>
         <Divider />
         <Header as='h2' inverted>About the project</Header>
-        <p inverted>
+        <p>
           This project is a plugin that alow using torrent at the same time as Zeronet. Using this plugin allow you to create a bridge between Zeronet network and the Torrent newtork.
         </p>
         <Header as='h2' inverted>!!! Important !!!</Header>
-        <p inverted>
+        <p>
           Using this plugin will make you as anonymous as torrent would. If you are using Zeronet with Tor and care about your anonimity please do not install ! It is not safe as it is. You can however use it behind a VPN and keep your ip address hidden.
         </p>
         <Header as='h2' inverted>Help</Header>

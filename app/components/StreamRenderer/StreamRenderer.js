@@ -35,7 +35,7 @@ class StreamRenderer extends Component {
         let fileName = response.files[i].path
         let fileExtension = fileName.split('.').pop()
 
-        if (fileExtension === 'mp4' || fileExtension === 'wbm') {
+        if (fileExtension === 'mp4' || fileExtension === 'wbm' || fileExtension === 'webm') {
           // Use render media
           let file = {
             name: fileName,
@@ -51,6 +51,7 @@ class StreamRenderer extends Component {
           }
 
           render.append(file, '#video-player', function (err, elem) {
+            elem.style.width = '100%'
             if (err) return console.error(err.message)
           })
           return
