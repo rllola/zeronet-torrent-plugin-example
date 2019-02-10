@@ -69,7 +69,9 @@ class TorrentForm extends Component {
       <div style={{color: 'white', paddingBottom: '48px'}}>
         <br />
         <Header as='h2' inverted >Add torrent form</Header>
+        <span style={{ color: 'white' }}>You can find free torrent here so you can test : <a href='https://webtorrent.io/free-torrents'>webtorrent.io/free-torrents</a></span>
         <br />
+        <br/>
         <Form inverted onSubmit={this.onSubmit}>
           <Form.Group widths='equal'>
             <Form.Field style={{ paddingRight: '32px' }}>
