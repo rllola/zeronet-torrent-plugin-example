@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8">
     <title>ZeroNet/React example</title>
-</head>
-<body>
-
-<div id="root"></div>
-
-<script src="dist/all.js"></script>
-
-</body>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <base href="" target="_top" id="base">
+    <link rel="stylesheet" type="text/css" href="assets/stylesheets/semantic.min.css">
+    <link rel="stylesheet" type="text/css" href="dist/style.css">
+    <script>base.href = document.location.href.replace("/media", "").replace("index.html", "").replace(/[&?]wrapper=False/, "").replace(/[&?]wrapper_nonce=[A-Za-z0-9]+/, "")</script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script src="dist/all.js"></script>
+  </body>
 </html>
