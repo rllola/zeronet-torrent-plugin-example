@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { observer, inject } from 'mobx-react'
-import { Container, Header, Divider } from 'semantic-ui-react'
+import { Container, Header, Divider, List } from 'semantic-ui-react'
 
 import Streaming from './Streaming'
 import NoTorrentPlugin from './NoTorrentPlugin'
@@ -48,6 +48,22 @@ class Application extends Component {
         <Header as='h2' inverted>!!! Important !!!</Header>
         <p>
           Using this plugin will make you as anonymous as torrent would. If you are using Zeronet with Tor and care about your anonimity please do not install ! It is not safe as it is. You can however use it behind a VPN and keep your ip address hidden.
+        </p>
+        <Header as='h2' inverted>Install</Header>
+        <p>
+          1/ Download the version that fit your platform :
+          <List bulleted>
+            <List.Item>OSX : <a href='assets/downloads/torrent-plugin-osx.zip'>torrent-plugin-osx.zip</a></List.Item>
+            <List.Item>Linux : <a href='assets/downloads/torrent-plugin-linux.zip'>torrent-plugin-linux.zip</a></List.Item>
+          </List>
+          <br/>
+          2/ Go to your Zeronet folder and unzip in `plugins`.
+          <br/>
+          <br/>
+          3/ Rename the folder in `Torrent`.
+          <br/>
+          <br/>
+          4/ Restart Zeronet and come back here...
         </p>
         <Header as='h2' inverted>Help</Header>
         <span style={{color: 'white'}}>
