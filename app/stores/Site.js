@@ -16,8 +16,6 @@ class Site extends ZeroFrame {
     this.events = new EventEmitter()
 
     this.addTorrent = this.addTorrent.bind(this)
-
-    this.fetchServerInfo()
   }
 
   route (cmd, message) {
@@ -47,6 +45,7 @@ class Site extends ZeroFrame {
   }
 
   @action setServerInfo (info) {
+    console.log(info)
     this.serverInfo = info
   }
 

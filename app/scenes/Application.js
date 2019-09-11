@@ -1,15 +1,20 @@
 import React, { Component } from 'react'
 import { observer, inject } from 'mobx-react'
-import { Container, Header, Divider, List } from 'semantic-ui-react'
+import { Container, Header, Divider, Loader } from 'semantic-ui-react'
 
 import Streaming from './Streaming'
 import NoTorrentPlugin from './NoTorrentPlugin'
+import Download from './Download'
 
 // TODO: We need a splash screen ! Wait until we no if we have the plugin or not...
 
 @inject('site')
 @observer
 class Application extends Component {
+  componentDidMount () {
+    this.props.site.fetchServerInfo()
+  }
+
   render () {
     return (
       <Container>
@@ -52,10 +57,7 @@ class Application extends Component {
         <Header as='h2' inverted>Install</Header>
         <p>
           1/ Download the version that fit your platform :
-          <List bulleted>
-            <List.Item>OSX : <a href='assets/downloads/torrent-plugin-osx.zip'>torrent-plugin-osx.zip</a></List.Item>
-            <List.Item>Linux : <a href='assets/downloads/torrent-plugin-linux.zip'>torrent-plugin-linux.zip</a></List.Item>
-          </List>
+          {this.props.site.serverInfo.rev ? <Download rev={this.props.site.serverInfo.rev} /> : <div style={{position: 'relative'}}><Loader size='big' active inverted >Getting server info!</Loader></div>}
           <br/>
           2/ Go to your Zeronet folder and unzip in `plugins`.
           <br/>
