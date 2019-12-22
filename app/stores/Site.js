@@ -4,6 +4,8 @@ import EventEmitter from 'events'
 
 const READ_PIECE_ALERT = 'read_piece_alert'
 const PIECE_FINISHED_ALERT = 'piece_finished_alert'
+const ADD_TORRENT_ALERT = 'add_torrent_alert'
+const TORRENT_CHECKED_ALERT = 'torrent_checked_alert'
 
 class Site extends ZeroFrame {
   @observable serverInfo = {}
@@ -34,6 +36,12 @@ class Site extends ZeroFrame {
       case PIECE_FINISHED_ALERT:
         this.events.emit(PIECE_FINISHED_ALERT, message.params.pieceIndex)
         break
+      case ADD_TORRENT_ALERT:
+        this.events.emit(ADD_TORRENT_ALERT)
+        break
+      case TORRENT_CHECKED_ALERT:
+        this.events.emit(TORRENT_CHECKED_ALERT)
+        break
     }
   }
 
@@ -55,11 +63,9 @@ class Site extends ZeroFrame {
     })
   }
 
-  addTorrent (torrentIdentifier) {
-    var self = this
-
+  addTorrent = (torrentIdentifier) => {
     return new Promise((resolve, reject) => {
-      self.cmd('addTorrent', torrentIdentifier, (response) => {
+      this.cmd('addTorrent', torrentIdentifier, (response) => {
         if (response.info_hash) {
           resolve(response)
         } else {
@@ -69,10 +75,9 @@ class Site extends ZeroFrame {
     })
   }
 
-  getTorrentStatus (infoHash) {
-    var self = this
+  getTorrentStatus = (infoHash) => {
     return new Promise((resolve, reject) => {
-      self.cmd('torrentStatus', infoHash, function (response) {
+      this.cmd('torrentStatus', infoHash, function (response) {
         if (!response.error) {
           resolve(response)
         } else {
@@ -82,10 +87,9 @@ class Site extends ZeroFrame {
     })
   }
 
-  getTorrentInfo (infoHash) {
-    var self = this
+  getTorrentInfo = (infoHash) => {
     return new Promise((resolve, reject) => {
-      self.cmd('getTorrentInfo', infoHash, function (response) {
+      this.cmd('getTorrentInfo', infoHash, function (response) {
         if (!response.error) {
           resolve(response)
         } else {
@@ -94,6 +98,20 @@ class Site extends ZeroFrame {
       })
     })
   }
+
+  getPluginVersion = () => {
+    return new Promise((resolve, reject) => {
+      this.cmd('getVersion', {}, function (response) {
+        if (!response.error) {
+          resolve(response)
+        } else {
+          reject(response)
+        }
+      })
+    })
+  }
+
+  // -------------- NOT NEEDED ANYMORE ----------------------
 
   readPiece (infoHash, pieceIndex, callback) {
     var self = this

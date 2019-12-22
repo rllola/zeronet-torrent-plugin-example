@@ -16,7 +16,10 @@ class TorrentForm extends Component {
 
   submitTorrentURL = () => {
     this.props.site.addTorrent(this.state.torrentURL).then((torrent) => {
-      this.props.torrentAdded(torrent)
+      this.props.site.events.on('torrent_checked_alert', () => {
+        this.props.torrentAdded(torrent)
+      })
+
     }).catch(function (err) {
       console.error(err)
     })
@@ -34,7 +37,9 @@ class TorrentForm extends Component {
         var base64BinaryString = window.btoa(binaryString)
 
         this.props.site.addTorrent(base64BinaryString).then((torrent) => {
-          this.props.torrentAdded(torrent)
+          this.props.site.events.on('add_torrent_alert', () => {
+            this.props.torrentAdded(torrent)
+          })
         }).catch((err) => {
           console.error(err)
         })
