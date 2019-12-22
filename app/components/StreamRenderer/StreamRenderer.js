@@ -1,7 +1,5 @@
 import React, { Component } from 'react'
 import { inject } from 'mobx-react'
-import render from 'render-media'
-import FileStream from './FileStream'
 import TorrentStatus from './TorrentStatus'
 
 @inject('site')
@@ -15,64 +13,42 @@ class StreamRenderer extends Component {
     }
   }
 
-  componentWillMount () {
+  componentDidMount () {
     window.setInterval(() => {
       this.props.site.getTorrentStatus(this.props.torrentInfoHash).then((response) => {
+        console.log(response)
         this.setState({torrentStatus: response})
         if ((response.state === "seeding" || response.state === "downloading") && !this.state.streaming ) {
           this.startStreaming(this.props.torrentInfoHash)
+          this.setState({streaming: true})
         }
       })
     }, 1000)
   }
 
   startStreaming (infoHash) {
-    var self = this
-    this.setState({streaming: true})
     this.props.site.getTorrentInfo(infoHash).then((response) => {
-      console.log(response)
+      let player = document.getElementById("video-player")
+
+      // Look at all the files
       for (var i in response.files) {
         let fileName = response.files[i].path
         let fileExtension = fileName.split('.').pop()
 
+        // We can only read mp4, wbm or webm files
         if (fileExtension === 'mp4' || fileExtension === 'wbm' || fileExtension === 'webm') {
-          // Use render media
-          let file = {
-            name: fileName,
-            createReadStream: function (opts = {}) {
-              let offset = response.files[i].offset
-              let size  = response.files[i].size
-              let pieceLength = response.piece_length
-
-              var fileStream = new FileStream(offset, size, pieceLength, infoHash, self.props.site, opts)
-
-              return fileStream
-            }
+            player.src = 'downloads/'+ fileName + "?info_hash="+infoHash+"&file_index="+i
+            break
           }
-
-          render.append(file, '#video-player', function (err, elem) {
-            elem.style.width = '100%'
-            if (err) return console.error(err.message)
-          })
-          return
         }
-      }
-      /*this.props.site.havePiece(infoHash, 987, (response) => {
-        if (response) {
-          this.props.site.readPiece(infoHash, 987, (response) => {
-            console.log(response)
-          })
-        } else {
-          console.error('Piece not available !')
-        }
-      })*/
+        return
     })
   }
 
   render () {
     return (
       <div>
-      <div id="video-player"></div>
+      <video id="video-player" controls/>
       <br />
         { this.state.torrentStatus ? <TorrentStatus torrentStatus={this.state.torrentStatus} /> : null}
       </div>

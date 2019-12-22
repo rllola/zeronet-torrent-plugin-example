@@ -4,6 +4,7 @@ import { Container, Header, Divider, Loader } from 'semantic-ui-react'
 
 import Streaming from './Streaming'
 import NoTorrentPlugin from './NoTorrentPlugin'
+import NotCompatible from './NotCompatible'
 import Download from './Download'
 
 // TODO: We need a splash screen ! Wait until we no if we have the plugin or not...
@@ -11,14 +12,22 @@ import Download from './Download'
 @inject('site')
 @observer
 class Application extends Component {
+
+  state = {
+    version: null
+  }
+
   componentDidMount () {
     this.props.site.fetchServerInfo()
+    this.props.site.getPluginVersion()
+      .then((response) => {
+        this.setState({version: response.version})
+      })
   }
 
   render () {
     return (
       <Container>
-        {/* Heads up! We apply there some custom styling, you usually will not need it. */}
         <style>{`
           html, body {
             background-color: #252839 !important;
@@ -73,8 +82,9 @@ class Application extends Component {
         </span>
         <Divider />
         {this.props.site.hasTorrentPlugin
-          ? <Streaming />
-          : <NoTorrentPlugin />}
+          ? ( this.state.version && this.state.version.split('.')[1] < 3 ? <NotCompatible /> : <Streaming />)
+        : <NoTorrentPlugin />
+        }
 
       </Container>
     )
