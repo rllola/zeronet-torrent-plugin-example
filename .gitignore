@@ -2,3 +2,5 @@ content.json
 node_modules/
 dist/
 downloads/
+!assets/downloads
+assets/downloads/*.zip
