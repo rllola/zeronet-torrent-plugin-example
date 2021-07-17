@@ -2,10 +2,10 @@ import { observable, action, computed } from 'mobx'
 import ZeroFrame from 'zeroframe'
 import EventEmitter from 'events'
 
-const READ_PIECE_ALERT = 'read_piece_alert'
-const PIECE_FINISHED_ALERT = 'piece_finished_alert'
-const ADD_TORRENT_ALERT = 'add_torrent_alert'
-const TORRENT_CHECKED_ALERT = 'torrent_checked_alert'
+const READ_PIECE_ALERT = 'read_piece'
+const PIECE_FINISHED_ALERT = 'piece_finished'
+const ADD_TORRENT_ALERT = 'add_torrent'
+const TORRENT_CHECKED_ALERT = 'torrent_checked'
 
 class Site extends ZeroFrame {
   @observable serverInfo = {}
@@ -20,7 +20,8 @@ class Site extends ZeroFrame {
     this.addTorrent = this.addTorrent.bind(this)
   }
 
-  route (cmd, message) {
+  onRequest (cmd, message) {
+    console.log(cmd)
     switch(cmd) {
       case READ_PIECE_ALERT:
         if (this.readPiecesCallbacks.has(message.params.pieceIndex)) {
@@ -111,50 +112,18 @@ class Site extends ZeroFrame {
     })
   }
 
-  // -------------- NOT NEEDED ANYMORE ----------------------
-
-  readPiece (infoHash, pieceIndex, callback) {
-    var self = this
-    if (typeof callback !== 'function') {
-      throw 'Callback need to be a function !'
-    } else {
-      this.cmd('readPiece', {info_hash: infoHash, piece_index: pieceIndex}, (response) => {
-        if (response === 'ok') {
-          self.readPiecesCallbacks.set(pieceIndex, callback)
+  addPluginRequest = () => {
+    return new Promise((resolve, reject) => {
+      this.cmd('pluginAddRequest', 'Torrent', function (response) {
+        if (!response.error) {
+          resolve(response)
         } else {
-          console.error(response.error)
+          reject(response)
         }
       })
-    }
+    })
   }
 
-  havePiece (infoHash, pieceIndex, callback) {
-    if (typeof callback !== 'function') {
-      throw 'Callback need to be a function !'
-    } else {
-      this.cmd('havePiece', {info_hash: infoHash, piece_index: pieceIndex}, (response) => {
-        if (response.error) {
-          console.error(response.error)
-        } else {
-          callback(response)
-        }
-      })
-    }
-  }
-
-  prioritizePiece (infoHash, pieceIndex, newPriority, callback) {
-    if (typeof callback !== 'function') {
-      throw 'Callback need to be a function !'
-    } else {
-      this.cmd('prioritizePiece', {info_hash: infoHash, piece_index: pieceIndex, new_priority: newPriority}, (response) => {
-        if (response.error) {
-          console.error(response.error)
-        } else {
-          callback(response)
-        }
-      })
-    }
-  }
 }
 
 export default Site
