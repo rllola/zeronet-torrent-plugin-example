@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { observer, inject } from 'mobx-react'
 
 import TorrentForm from '../components/TorrentForm'
 import StreamRenderer from '../components/StreamRenderer'
@@ -22,8 +21,7 @@ class Streaming extends Component {
   render () {
     return (
       <div>
-        <TorrentForm torrentAdded={this.torrentAdded} />
-        { this.state.torrentInfoHash ? <StreamRenderer torrentInfoHash={this.state.torrentInfoHash}/> : null }
+        { this.state.torrentInfoHash ? <StreamRenderer torrentInfoHash={this.state.torrentInfoHash}/> : <TorrentForm torrentAdded={this.torrentAdded} /> }
       </div>
     )
   }

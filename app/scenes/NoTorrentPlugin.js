@@ -1,15 +1,36 @@
-import React from 'react'
-import { Header } from 'semantic-ui-react'
+import React, { Component } from 'react'
+import { inject } from 'mobx-react'
 
-const NoTorrentPlugin = () => {
-  return (
-    <div>
-      <Header as='h2' inverted>Torrent plugin not installed</Header>
-      <p>You need to install the zeronet torrent plugin in order to have the example site working.</p>
-      <p>You can find the repo for the plugin and more information <a href='https://github.com/rllola/zeronet-torrent-plugin' target='_blank'>here</a></p>
-      <p>You can also contact me via ZeroMail : lola@zeroid.bit</p>
-    </div>
-  )
+@inject('site')
+class NoTorrentPlugin extends Component {
+
+  handleInstallClicked = (event) => {
+    event.preventDefault()
+
+    // TODO: loader
+    this.props.site.addPluginRequest()
+      .then(function () {
+        console.log('installed')
+      })
+      .catch(function (err) {
+        console.log(err)
+      })
+
+  }
+
+  render () {
+    return (
+      <div>
+        <a
+          href="#"
+          className="mt-8 w-full inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-indigo-600 bg-white hover:bg-indigo-50 sm:w-auto"
+          onClick={this.handleInstallClicked}
+        >
+          Install plugin
+        </a>
+      </div>
+    )
+  }
 }
 
 export default NoTorrentPlugin
