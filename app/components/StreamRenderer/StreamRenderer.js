@@ -16,7 +16,6 @@ class StreamRenderer extends Component {
   componentDidMount () {
     window.setInterval(() => {
       this.props.site.getTorrentStatus(this.props.torrentInfoHash).then((response) => {
-        console.log(response)
         this.setState({torrentStatus: response})
         if ((response.state === "seeding" || response.state === "downloading") && !this.state.streaming ) {
           this.startStreaming(this.props.torrentInfoHash)
@@ -38,6 +37,7 @@ class StreamRenderer extends Component {
         // We can only read mp4, wbm or webm files
         if (fileExtension === 'mp4' || fileExtension === 'wbm' || fileExtension === 'webm') {
             player.src = 'downloads/'+ fileName + "?info_hash="+infoHash+"&file_index="+i
+            console.log(player.src)
             break
           }
         }
@@ -47,9 +47,9 @@ class StreamRenderer extends Component {
 
   render () {
     return (
-      <div>
-      <video id="video-player" controls/>
-      <br />
+      <div className='flex flex-col text-white mt-8'>
+        <video id='video-player' controls/>
+        <br />
         { this.state.torrentStatus ? <TorrentStatus torrentStatus={this.state.torrentStatus} /> : null}
       </div>
     )

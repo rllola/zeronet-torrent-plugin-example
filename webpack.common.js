@@ -1,5 +1,5 @@
 const path = require('path')
-const CleanWebpackPlugin = require('clean-webpack-plugin')
+const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 module.exports = {
@@ -7,7 +7,7 @@ module.exports = {
    app: './app/index.js'
   },
    plugins: [
-    new CleanWebpackPlugin(['dist']),
+    new CleanWebpackPlugin(),
     new MiniCssExtractPlugin({
       // Options similar to the same options in webpackOptions.output
       // both options are optional
@@ -29,7 +29,8 @@ module.exports = {
            presets: ['@babel/preset-env','@babel/preset-react'],
            plugins: [
              ['@babel/plugin-proposal-decorators', { 'legacy': true }],
-             ['@babel/plugin-proposal-class-properties', { 'loose' : true }]
+             ['@babel/plugin-proposal-class-properties', { 'loose' : true }],
+             ['@babel/plugin-proposal-private-methods', { 'loose': true }]
            ]
          }
        }
@@ -45,7 +46,13 @@ module.exports = {
              publicPath: '../'
            }
          },
-         "css-loader"
+         {
+          loader: 'css-loader',
+          options: {
+            importLoaders: 1
+          }
+        },
+        'postcss-loader'
        ]
      },
      {
