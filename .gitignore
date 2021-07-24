@@ -4,3 +4,4 @@ dist/
 downloads/
 !assets/downloads
 assets/downloads/*.zip
+plugin/**/Torrent/*

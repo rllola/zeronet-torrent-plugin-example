@@ -5,10 +5,9 @@
  },
  "files_optional": {
  },
- "ignore": "(data/.*|.git|node_modules|app|gulpfile.js|package.json|README.md|webpack.*.js|package-lock.json|assets/fonts|assets/stylesheets|downloads|content.json-copy)",
+ "ignore": "(data/.*|.git|node_modules|app|gulpfile.js|package.json|README.md|webpack.*.js|package-lock.json|downloads|content.json-copy)",
  "inner_path": "content.json",
  "modified": 1565606642,
- "optional": "(assets/downloads/.*)",
  "postmessage_nonce_security": true,
  "signers_sign": "HDD4R25nFJfONwx78W1MoBnvZ7D4iy/qcWniJIv+n1NTYy+Ug1AeCFTuw/W0US7qiAMUa8QCky1Dw6gdAp/9xo4=",
  "signs": {

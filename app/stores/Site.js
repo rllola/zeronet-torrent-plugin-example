@@ -21,7 +21,6 @@ class Site extends ZeroFrame {
   }
 
   onRequest (cmd, message) {
-    console.log(cmd)
     switch(cmd) {
       case READ_PIECE_ALERT:
         if (this.readPiecesCallbacks.has(message.params.pieceIndex)) {
@@ -54,12 +53,12 @@ class Site extends ZeroFrame {
   }
 
   @action setServerInfo (info) {
-    console.log(info)
     this.serverInfo = info
   }
 
   fetchServerInfo () {
     this.cmd('serverInfo', {}, (response) => {
+      console.log(response)
       this.setServerInfo(response)
     })
   }
@@ -112,9 +111,10 @@ class Site extends ZeroFrame {
     })
   }
 
-  addPluginRequest = () => {
+  addPluginRequest = (platform) => {
+    console.log(`plugin/${platform}/Torrent`)
     return new Promise((resolve, reject) => {
-      this.cmd('pluginAddRequest', 'Torrent', function (response) {
+      this.cmd('pluginAddRequest', `plugin/${platform}/Torrent`, function (response) {
         if (!response.error) {
           resolve(response)
         } else {

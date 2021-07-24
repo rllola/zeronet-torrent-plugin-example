@@ -12,14 +12,13 @@ import NotCompatible from './NotCompatible'
 class Application extends Component {
 
   state = {
-    version: null
+    version: null,
   }
 
   componentDidMount () {
     this.props.site.fetchServerInfo()
     this.props.site.getPluginVersion()
       .then((response) => {
-        console.log(response)
         this.setState({version: response.version})
       })
   }

@@ -8,7 +8,7 @@ class NoTorrentPlugin extends Component {
     event.preventDefault()
 
     // TODO: loader
-    this.props.site.addPluginRequest()
+    this.props.site.addPluginRequest(this.props.site.serverInfo.platform)
       .then(function () {
         console.log('installed')
       })

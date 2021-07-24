@@ -37,6 +37,7 @@ class StreamRenderer extends Component {
         // We can only read mp4, wbm or webm files
         if (fileExtension === 'mp4' || fileExtension === 'wbm' || fileExtension === 'webm') {
             player.src = 'downloads/'+ fileName + "?info_hash="+infoHash+"&file_index="+i
+            console.log(player.src)
             break
           }
         }
