@@ -17,9 +17,19 @@ class Application extends Component {
 
   componentDidMount () {
     this.props.site.fetchServerInfo()
-    this.props.site.getPluginVersion()
-      .then((response) => {
-        this.setState({version: response.version})
+      .then(() => {
+        if (this.props.site.hasTorrentPlugin) {
+          this.props.site.fetchSiteInfo()
+            .then(() => {
+              if (!this.props.site.hasTorrentPermission) {
+                this.props.site.addTorrentPermission()
+              }
+            })
+          this.props.site.getPluginVersion()
+            .then((response) => {
+              this.setState({version: response.version})
+            })
+        }
       })
   }
 
