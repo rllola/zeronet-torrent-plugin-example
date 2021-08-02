@@ -9,6 +9,7 @@ const TORRENT_CHECKED_ALERT = 'torrent_checked'
 
 class Site extends ZeroFrame {
   @observable serverInfo = {}
+  @observable siteInfo = {}
 
   constructor () {
     super()
@@ -22,6 +23,9 @@ class Site extends ZeroFrame {
 
   onRequest (cmd, message) {
     switch(cmd) {
+      case "setSiteInfo":
+        this.setSiteInfo(message.params)
+        break
       case READ_PIECE_ALERT:
         if (this.readPiecesCallbacks.has(message.params.pieceIndex)) {
           var callback = this.readPiecesCallbacks.get(message.params.pieceIndex)
@@ -42,6 +46,8 @@ class Site extends ZeroFrame {
       case TORRENT_CHECKED_ALERT:
         this.events.emit(TORRENT_CHECKED_ALERT)
         break
+      default:
+        console.log(`Unknown command: ${cmd}`)
     }
   }
 
@@ -52,14 +58,44 @@ class Site extends ZeroFrame {
     return false
   }
 
+  @computed get hasTorrentPermission () {
+    if (this.siteInfo.settings && this.siteInfo.settings.permissions.indexOf('Torrent') > -1) {
+      return true
+    }
+    return false
+  }
+
   @action setServerInfo (info) {
     this.serverInfo = info
   }
 
+  @action setSiteInfo (info) {
+    this.siteInfo = info
+  }
+
   fetchServerInfo () {
-    this.cmd('serverInfo', {}, (response) => {
-      console.log(response)
-      this.setServerInfo(response)
+    return new Promise((resolve, reject) => {
+      this.cmd('serverInfo', {}, (response) => {
+        if (!response.error) {
+          this.setServerInfo(response)
+          resolve(response)
+        } else {
+          reject()
+        }
+      })
+    })
+  }
+
+  fetchSiteInfo () {
+    return new Promise((resolve, reject) => {
+      this.cmd('siteInfo', {}, (response) => {
+        if (!response.error) {
+          this.setSiteInfo(response)
+          resolve(response)
+        } else {
+          reject()
+        }
+      })
     })
   }
 
@@ -112,13 +148,25 @@ class Site extends ZeroFrame {
   }
 
   addPluginRequest = (platform) => {
-    console.log(`plugin/${platform}/Torrent`)
     return new Promise((resolve, reject) => {
       this.cmd('pluginAddRequest', `plugin/${platform}/Torrent`, function (response) {
         if (!response.error) {
           resolve(response)
         } else {
           reject(response)
+        }
+      })
+    })
+  }
+
+  addTorrentPermission = () => {
+    return new Promise((resolve, reject) => {
+      this.cmd('wrapperPermissionAdd', ['Torrent'], function (response) {
+        console.log(response)
+        if (!response.error && response === "ok") {
+          resolve()
+        } else {
+          reject()
         }
       })
     })
