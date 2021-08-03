@@ -149,7 +149,7 @@ class Site extends ZeroFrame {
 
   addPluginRequest = (platform) => {
     return new Promise((resolve, reject) => {
-      this.cmd('pluginAddRequest', `plugin/${platform}/Torrent`, function (response) {
+      this.cmd('pluginAddRequest', `plugin/Torrent`, function (response) {
         if (!response.error) {
           resolve(response)
         } else {
